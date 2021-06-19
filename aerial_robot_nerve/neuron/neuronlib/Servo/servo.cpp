@@ -8,9 +8,9 @@
 
 #include "servo.h"
 
-void Servo::init(UART_HandleTypeDef* huart)
+void Servo::init(UART_HandleTypeDef* huart, I2C_HandleTypeDef* hi2c)
 {
-	servo_handler_.init(huart);
+        servo_handler_.init(huart, hi2c);
 }
 
 void Servo::update()
@@ -28,8 +28,7 @@ void Servo::sendData()
 							  s.moving_,
 							  s.present_current_,
 							  s.hardware_error_status_);
-			setMessage(CAN::MESSAGEID_SEND_SERVO_LIST[i], m_slave_id, 8, reinterpret_cast<uint8_t*>(&data));
-			sendMessage(1);
+			sendMessage(CAN::MESSAGEID_SEND_SERVO_LIST[i], m_slave_id, 8, reinterpret_cast<uint8_t*>(&data), 1);
 		}
 	}
 }

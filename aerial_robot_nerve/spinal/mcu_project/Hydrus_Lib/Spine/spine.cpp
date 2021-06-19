@@ -73,6 +73,9 @@ namespace Spine
 			  board.servos[j].profile_velocity = s.getProfileVelocity();
 			  board.servos[j].current_limit = s.getCurrentLimit();
 			  board.servos[j].send_data_flag = s.getSendDataFlag() ? 1 : 0;
+			  board.servos[j].external_encoder_flag = s.getExternalEncoderFlag() ? 1 : 0;
+			  board.servos[j].joint_resolution = s.getJointResolution();
+			  board.servos[j].servo_resolution = s.getServoResolution();
 		  }
 	  }
 	  res = board_info_res_;
@@ -135,7 +138,7 @@ namespace Spine
 
     HAL_Delay(5000); //wait neuron initialization
     CANDeviceManager::addDevice(can_initializer_);
-    CANDeviceManager::Receive_IT();
+    CANDeviceManager::CAN_START();
     can_initializer_.initDevices();
 
     //add CAN devices to CANDeviceManager
@@ -219,7 +222,7 @@ namespace Spine
 	if(HAL_GetTick() % 2 == 0) {
 	  can_motor_send_device_.sendData();
 	  if (slave_num_ != 0) {
-		  neuron_.at(send_board_index).can_servo_.sendData();
+             neuron_.at(send_board_index).can_servo_.sendData();
 		  send_board_index++;
 		  if (send_board_index == slave_num_) send_board_index = 0;
 	  }
